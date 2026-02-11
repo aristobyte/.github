@@ -1,0 +1,68 @@
+name: Reusable CI
+
+on:
+  workflow_call:
+    inputs:
+      node_version_file:
+        type: string
+        default: .nvmrc
+      install_command:
+        type: string
+        default: yarn install --frozen-lockfile
+      lint_command:
+        type: string
+        default: yarn lint
+      test_command:
+        type: string
+        default: yarn test:ci
+      build_command:
+        type: string
+        default: yarn build
+      run_lint:
+        type: boolean
+        default: true
+      run_tests:
+        type: boolean
+        default: true
+      run_build:
+        type: boolean
+        default: true
+      skip_ci:
+        type: boolean
+        default: false
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip_ci }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ inputs.node_version_file }}
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install
+        run: ${{ inputs.install_command }}
+
+      - name: Lint
+        if: ${{ inputs.run_lint }}
+        run: ${{ inputs.lint_command }}
+
+      - name: Build
+        if: ${{ inputs.run_build }}
+        run: ${{ inputs.build_command }}
+
+      - name: Tests
+        if: ${{ inputs.run_tests }}
+        run: ${{ inputs.test_command }}
