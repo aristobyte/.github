@@ -1,0 +1,20 @@
+name: Reusable Dependency Review
+
+on:
+  workflow_call:
+    inputs:
+      skip_ci:
+        type: boolean
+        default: false
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip_ci }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4

@@ -1,0 +1,18 @@
+docs:
+  - '**/*.md'
+  - 'apps/docs/**'
+
+ci:
+  - '.github/workflows/**'
+
+tests:
+  - '**/*.test.*'
+  - '**/__tests__/**'
+
+styles:
+  - '**/*.scss'
+  - '**/*.css'
+
+dependencies:
+  - 'package.json'
+  - 'yarn.lock'
